@@ -4,10 +4,10 @@ local AimbotFeatureToggleActiveState=true
 local AimbotCircleScreenGui=Instance.new("ScreenGui")
 AimbotCircleScreenGui.Name,AimbotCircleScreenGui.ResetOnSpawn,AimbotCircleScreenGui.IgnoreGuiInset,AimbotCircleScreenGui.Parent="AimbotCircleVisualizationInterface",false,true,LocalPlayer:WaitForChild("PlayerGui")
 local AimbotCircleFrame=Instance.new("Frame")
-AimbotCircleFrame.Size,AimbotCircleFrame.Position,AimbotCircleFrame.AnchorPoint,AimbotCircleFrame.BackgroundTransparency,AimbotCircleFrame.BorderSizePixel,AimbotCircleFrame.Parent=UDim2.new(0,100,0,100),UDim2.new(.5,0,.5,0),Vector2.new(.5,.5),1,0,AimbotCircleScreenGui
+AimbotCircleFrame.Size,AimbotCircleFrame.Position,AimbotCircleFrame.AnchorPoint,AimbotCircleFrame.BackgroundTransparency,AimbotCircleFrame.BorderSizePixel,AimbotCircleFrame.Parent=UDim2.new(0,120,0,120),UDim2.new(.5,0,.5,0),Vector2.new(.5,.5),1,0,AimbotCircleScreenGui
 local CircleCorner=Instance.new("UICorner")CircleCorner.CornerRadius,CircleCorner.Parent=UDim.new(1,0),AimbotCircleFrame
 local CircleStroke=Instance.new("UIStroke")CircleStroke.Color,CircleStroke.Thickness,CircleStroke.Transparency,CircleStroke.LineJoinMode,CircleStroke.Parent=Color3.fromRGB(255,255,255),4,.3,Enum.LineJoinMode.Round,AimbotCircleFrame
-local CurrentTargetedPlayer,CircleRadiusPixels,MaximumAimbotRangeStuds=nil,50,120
+local CurrentTargetedPlayer,CircleRadiusPixels,MaximumAimbotRangeStuds=nil,60,180
 local RaycastConfiguration=RaycastParams.new()RaycastConfiguration.FilterType,RaycastConfiguration.IgnoreWater=Enum.RaycastFilterType.Blacklist,true
 local MiniPanelScreenGui=Instance.new("ScreenGui")
 MiniPanelScreenGui.Name,MiniPanelScreenGui.ResetOnSpawn,MiniPanelScreenGui.ZIndexBehavior,MiniPanelScreenGui.Enabled,MiniPanelScreenGui.Parent="MiniPanel_Aimbot",false,Enum.ZIndexBehavior.Sibling,true,LocalPlayer:WaitForChild("PlayerGui")
@@ -54,6 +54,7 @@ RunService.RenderStepped:Connect(function()
 		if CurrentCharacter and CurrentCharacter.Parent then local CurrentTorso=CurrentCharacter:FindFirstChild("Torso")or CurrentCharacter:FindFirstChild("HumanoidRootPart")
 			if CurrentTorso and(LocalTorso.Position-CurrentTorso.Position).Magnitude>=ShortestDistance then CurrentTargetedPlayer=ClosestPlayer end
 		else CurrentTargetedPlayer=ClosestPlayer end else CurrentTargetedPlayer=ClosestPlayer end
-	if CurrentTargetedPlayer and OptimalAimPart then Camera.CFrame=CFrame.new(Camera.CFrame.Position,OptimalAimPart.Position)CircleStroke.Color=Color3.fromRGB(255,85,85)
+	if CurrentTargetedPlayer and OptimalAimPart then Camera.CFrame=CFrame.new(Camera.CFrame.Position,OptimalAimPart.Position)
+		if CurrentTargetedPlayer:IsFriendsWith(LocalPlayer.UserId)then CircleStroke.Color=Color3.fromRGB(85,255,85)else CircleStroke.Color=Color3.fromRGB(255,85,85)end
 	else CircleStroke.Color=Color3.fromRGB(255,255,255)end
 end)
