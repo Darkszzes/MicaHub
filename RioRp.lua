@@ -4,7 +4,7 @@ local AimbotFeatureToggleActiveState=true
 local AimbotCircleScreenGui=Instance.new("ScreenGui")
 AimbotCircleScreenGui.Name,AimbotCircleScreenGui.ResetOnSpawn,AimbotCircleScreenGui.IgnoreGuiInset,AimbotCircleScreenGui.Parent="AimbotCircleVisualizationInterface",false,true,LocalPlayer:WaitForChild("PlayerGui")
 local AimbotCircleFrame=Instance.new("Frame")
-AimbotCircleFrame.Size,AimbotCircleFrame.Position,AimbotCircleFrame.AnchorPoint,AimbotCircleFrame.BackgroundTransparency,AimbotCircleFrame.BorderSizePixel,AimbotCircleFrame.Parent=UDim2.new(0,200,0,200),UDim2.new(.5,0,.5,0),Vector2.new(.5,.5),1,0,AimbotCircleScreenGui
+AimbotCircleFrame.Size,AimbotCircleFrame.Position,AimbotCircleFrame.AnchorPoint,AimbotCircleFrame.BackgroundTransparency,AimbotCircleFrame.BorderSizePixel,AimbotCircleFrame.Parent=UDim2.new(0,100,0,100),UDim2.new(.5,0,.5,0),Vector2.new(.5,.5),1,0,AimbotCircleScreenGui
 local CircleCorner=Instance.new("UICorner")CircleCorner.CornerRadius,CircleCorner.Parent=UDim.new(1,0),AimbotCircleFrame
 local CircleStroke=Instance.new("UIStroke")CircleStroke.Color,CircleStroke.Thickness,CircleStroke.Transparency,CircleStroke.LineJoinMode,CircleStroke.Parent=Color3.fromRGB(255,255,255),4,.3,Enum.LineJoinMode.Round,AimbotCircleFrame
 local CurrentTargetedPlayer,CircleRadiusPixels,MaximumAimbotRangeStuds=nil,50,120
