@@ -1,10 +1,213 @@
-repeat game:GetService("RunService").Heartbeat:Wait()until game:IsLoaded()repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer.Character repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer.PlayerGui
+repeat game:GetService("RunService").Heartbeat:Wait()until game:IsLoaded()
+repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer
+repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer.Character
+repeat game:GetService("RunService").Heartbeat:Wait()until game:GetService("Players").LocalPlayer.PlayerGui
 if game:GetService("CoreGui"):FindFirstChild("MicaHubUniversalInterface")then script:Destroy()return end
-local LocalPlayerReference,RunServiceReference,PlayersServiceReference,WorkspaceReference,CameraReference=game:GetService("Players").LocalPlayer,game:GetService("RunService"),game:GetService("Players"),game:GetService("Workspace"),game:GetService("Workspace").CurrentCamera local SystemExecutionStatusVariable,CurrentTargetedPlayerReference,CircleRadiusPixelsValue,MaximumAimbotRangeStudsValue,LastBillboardUpdateTime,BillboardUpdateInterval,SkeletonConnectionsR6Table,SkeletonLinesStorage=false,nil,110,250,0,0.1,{{"Head","Torso"},{"Torso","Left Arm"},{"Torso","Right Arm"},{"Torso","Left Leg"},{"Torso","Right Leg"}},{}local RaycastConfigurationParameters=RaycastParams.new()RaycastConfigurationParameters.FilterType,RaycastConfigurationParameters.IgnoreWater=Enum.RaycastFilterType.Blacklist,true
-local function CreateInstanceWithPropertiesFunction(ClassNameString,PropertiesTableReference)local InstanceReference=Instance.new(ClassNameString)for PropertyNameString,PropertyValueReference in pairs(PropertiesTableReference)do if PropertyNameString~="Parent"then InstanceReference[PropertyNameString]=PropertyValueReference end end if PropertiesTableReference.Parent then InstanceReference.Parent=PropertiesTableReference.Parent end return InstanceReference end
-local function CreatePlayerInformationPanelForCharacterModelReference(PlayerInstanceIteratorReference,CharacterModelReference)local MainBodyPartReference=CharacterModelReference:FindFirstChild("HumanoidRootPart")or CharacterModelReference:FindFirstChild("Torso")if not MainBodyPartReference then return end local PlayerInformationPanelPartInstance=CreateInstanceWithPropertiesFunction("Part",{Name="MicaHubInfoPanelPart",Size=Vector3.new(5,3.2,0.1),Anchored=true,CanCollide=false,Transparency=1,Parent=MainBodyPartReference})local PlayerInformationSurfaceGuiInstance=CreateInstanceWithPropertiesFunction("SurfaceGui",{Name="PlayerInfoPanel",Face=Enum.NormalId.Front,AlwaysOnTop=true,LightInfluence=0,SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud,PixelsPerStud=100,Parent=PlayerInformationPanelPartInstance})local MainFrameContainerInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="MainFrame",Size=UDim2.new(1,0,1,0),BackgroundColor3=Color3.fromRGB(50,50,55),BorderSizePixel=0,Parent=PlayerInformationSurfaceGuiInstance})CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,8),Parent=MainFrameContainerInstance})CreateInstanceWithPropertiesFunction("TextLabel",{Name="PlayerName",Size=UDim2.new(1,-20,0,50),Position=UDim2.new(0,10,0,10),BackgroundTransparency=1,Text="@"..PlayerInstanceIteratorReference.Name,TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=28,TextXAlignment=Enum.TextXAlignment.Left,TextStrokeTransparency=0.7,TextStrokeColor3=Color3.fromRGB(0,0,0),Parent=MainFrameContainerInstance})local ToolsContainerFrameInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="ToolsContainer",Size=UDim2.new(0,460,0,180),Position=UDim2.new(0,20,0,80),BackgroundTransparency=1,Parent=MainFrameContainerInstance})CreateInstanceWithPropertiesFunction("UIGridLayout",{CellSize=UDim2.new(0,80,0,80),CellPadding=UDim2.new(0,12,0,12),HorizontalAlignment=Enum.HorizontalAlignment.Center,VerticalAlignment=Enum.VerticalAlignment.Top,SortOrder=Enum.SortOrder.LayoutOrder,Parent=ToolsContainerFrameInstance})for ToolBoxIndexIterator=1,10 do local ToolBoxFrameInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="ToolBox"..ToolBoxIndexIterator,Size=UDim2.new(0,80,0,80),BackgroundColor3=Color3.fromRGB(35,35,40),BorderSizePixel=0,Parent=ToolsContainerFrameInstance})CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,10),Parent=ToolBoxFrameInstance})CreateInstanceWithPropertiesFunction("UIStroke",{Color=Color3.fromRGB(70,70,75),Thickness=2,Parent=ToolBoxFrameInstance})CreateInstanceWithPropertiesFunction("TextLabel",{Name="ToolName",Size=UDim2.new(1,-6,1,-6),BackgroundTransparency=1,Text="",TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=14,TextWrapped=true,TextScaled=true,TextStrokeTransparency=0.7,TextStrokeColor3=Color3.fromRGB(0,0,0),Parent=ToolBoxFrameInstance})end local function UpdatePlayerToolsDisplayInformationFunction()local PlayerBackpackReference=PlayerInstanceIteratorReference:FindFirstChild("Backpack")if not PlayerBackpackReference then return end local AllToolsCollectionTable={}for _,ToolInstanceIterator in ipairs(PlayerBackpackReference:GetChildren())do if ToolInstanceIterator:IsA("Tool")then table.insert(AllToolsCollectionTable,ToolInstanceIterator)end end for ToolDisplayIndexIterator=1,10 do local ToolBoxFrameReference=ToolsContainerFrameInstance:FindFirstChild("ToolBox"..ToolDisplayIndexIterator)if not ToolBoxFrameReference then continue end local ToolNameTextLabelReference=ToolBoxFrameReference:FindFirstChild("ToolName")if not ToolNameTextLabelReference then continue end ToolNameTextLabelReference.Text=AllToolsCollectionTable[ToolDisplayIndexIterator]and AllToolsCollectionTable[ToolDisplayIndexIterator].Name or""end end UpdatePlayerToolsDisplayInformationFunction()PlayerInstanceIteratorReference.Backpack.ChildAdded:Connect(UpdatePlayerToolsDisplayInformationFunction)PlayerInstanceIteratorReference.Backpack.ChildRemoved:Connect(UpdatePlayerToolsDisplayInformationFunction)RunServiceReference.RenderStepped:Connect(function()PlayerInformationPanelPartInstance.CFrame=CFrame.new(MainBodyPartReference.Position+Vector3.new(0,5,0),CameraReference.CFrame.Position)PlayerInformationSurfaceGuiInstance.Enabled=(CameraReference.CFrame.Position-PlayerInformationPanelPartInstance.Position).Magnitude<=30 end)end
-local MainScreenGuiContainer=CreateInstanceWithPropertiesFunction("ScreenGui",{Name="MicaHubUniversalInterface",ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling,IgnoreGuiInset=true,AutoLocalize=false,Parent=game:GetService("CoreGui")})local ToggleButtonFrameContainer=CreateInstanceWithPropertiesFunction("Frame",{Name="ToggleButtonFrame",Size=UDim2.new(0,55,0,55),Position=UDim2.new(0.8,0,0.1,10),BackgroundColor3=Color3.fromRGB(40,40,45),BorderSizePixel=0,Parent=MainScreenGuiContainer})CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,10),Parent=ToggleButtonFrameContainer})local ToggleButtonTextLabelElement=CreateInstanceWithPropertiesFunction("TextLabel",{Text="OFF",Size=UDim2.new(1,0,1,0),Position=UDim2.new(0,0,0,0),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=18,Parent=ToggleButtonFrameContainer})local ToggleButtonClickableButton=CreateInstanceWithPropertiesFunction("TextButton",{Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,Text="",Parent=ToggleButtonFrameContainer})ToggleButtonClickableButton.MouseButton1Click:Connect(function()SystemExecutionStatusVariable=not SystemExecutionStatusVariable ToggleButtonTextLabelElement.Text=SystemExecutionStatusVariable and"ON"or"OFF"end)
-local AimbotCircleFrameContainer=CreateInstanceWithPropertiesFunction("Frame",{Name="AimbotCircleFrame",Size=UDim2.new(0,220,0,220),Position=UDim2.new(.5,0,.5,0),AnchorPoint=Vector2.new(.5,.5),BackgroundTransparency=1,BorderSizePixel=0,Visible=false,Parent=MainScreenGuiContainer})CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(1,0),Parent=AimbotCircleFrameContainer})local CircleStrokeUIElement=CreateInstanceWithPropertiesFunction("UIStroke",{Color=Color3.fromRGB(255,255,255),Thickness=1,Transparency=0,LineJoinMode=Enum.LineJoinMode.Round,Parent=AimbotCircleFrameContainer})
-RunServiceReference.Heartbeat:Connect(function()local CurrentTime=tick()if CurrentTime-LastBillboardUpdateTime<BillboardUpdateInterval then return end LastBillboardUpdateTime=CurrentTime for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do if PlayerInstanceIterator==LocalPlayerReference then continue end local CharacterModelReference=PlayerInstanceIterator.Character if not CharacterModelReference then continue end local HumanoidInstanceReference,MainBodyPartReference=CharacterModelReference:FindFirstChildOfClass("Humanoid"),CharacterModelReference:FindFirstChild("HumanoidRootPart")or CharacterModelReference:FindFirstChild("Torso")if not HumanoidInstanceReference or not MainBodyPartReference then continue end if HumanoidInstanceReference.Health>0 then continue end local ProximityPromptReference,OldPlayerTagBillboardReference,ExistingPanelPartReference=CharacterModelReference:FindFirstChild("sPrompt",true),CharacterModelReference:FindFirstChild("Head")and CharacterModelReference.Head:FindFirstChild("pTag"),MainBodyPartReference:FindFirstChild("MicaHubInfoPanelPart")if ProximityPromptReference and ProximityPromptReference:IsA("ProximityPrompt")then ProximityPromptReference.Enabled=false end if OldPlayerTagBillboardReference then OldPlayerTagBillboardReference.Enabled=false end if ExistingPanelPartReference then continue end CreatePlayerInformationPanelForCharacterModelReference(PlayerInstanceIterator,CharacterModelReference)end end)
-RunServiceReference.RenderStepped:Connect(function()if not SystemExecutionStatusVariable then CurrentTargetedPlayerReference=nil AimbotCircleFrameContainer.Visible=false for _,LinesTable in pairs(SkeletonLinesStorage)do for _,LineInstance in pairs(LinesTable)do LineInstance.Visible=false end end return end AimbotCircleFrameContainer.Visible=true local LocalCharacterInstance=LocalPlayerReference.Character if not LocalCharacterInstance then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end local LocalHumanoidInstanceReference=LocalCharacterInstance:FindFirstChildOfClass("Humanoid")if not LocalHumanoidInstanceReference then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end local LocalTorsoPartReference=LocalCharacterInstance:FindFirstChild("Torso")or LocalCharacterInstance:FindFirstChild("HumanoidRootPart")if not LocalTorsoPartReference then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end if LocalHumanoidInstanceReference.Health<=0 or LocalHumanoidInstanceReference.Sit==true then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end local EquippedToolReference=LocalCharacterInstance:FindFirstChildOfClass("Tool")if not EquippedToolReference then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end if EquippedToolReference.Name=="Celular"then CurrentTargetedPlayerReference=nil CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)return end RaycastConfigurationParameters.FilterDescendantsInstances={LocalCharacterInstance}local ClosestPlayerReference,ShortestDistanceValue,OptimalAimPartReference,ScreenCenterPositionVector=nil,math.huge,nil,Vector2.new(CameraReference.ViewportSize.X*.5,CameraReference.ViewportSize.Y*.5)for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do if PlayerInstanceIterator==LocalPlayerReference then continue end if PlayerInstanceIterator:IsFriendsWith(LocalPlayerReference.UserId)then continue end local CharacterModelReference=PlayerInstanceIterator.Character if not CharacterModelReference or not CharacterModelReference.Parent then continue end local HumanoidInstanceReference=CharacterModelReference:FindFirstChildOfClass("Humanoid")if not HumanoidInstanceReference then continue end if HumanoidInstanceReference.Health<=0 or HumanoidInstanceReference.Sit==true then continue end local TargetTorsoPartReference=CharacterModelReference:FindFirstChild("Torso")or CharacterModelReference:FindFirstChild("HumanoidRootPart")if not TargetTorsoPartReference then continue end if CharacterModelReference:FindFirstChildOfClass("ForceField")then continue end local DistanceToTargetValue=(LocalTorsoPartReference.Position-TargetTorsoPartReference.Position).Magnitude if DistanceToTargetValue>MaximumAimbotRangeStudsValue then continue end for _,PartNameStringIterator in ipairs({"Head","Torso"})do local TargetPartReference=CharacterModelReference:FindFirstChild(PartNameStringIterator)if not TargetPartReference then continue end local ScreenPositionVector,IsOnScreenBoolean=CameraReference:WorldToViewportPoint(TargetPartReference.Position)if not IsOnScreenBoolean then continue end if(Vector2.new(ScreenPositionVector.X,ScreenPositionVector.Y)-ScreenCenterPositionVector).Magnitude>CircleRadiusPixelsValue then continue end local RaycastResultData=WorkspaceReference:Raycast(CameraReference.CFrame.Position,TargetPartReference.Position-CameraReference.CFrame.Position,RaycastConfigurationParameters)if RaycastResultData and not(RaycastResultData.Instance.Parent and RaycastResultData.Instance.Parent:FindFirstChildOfClass("Humanoid"))then continue end if DistanceToTargetValue>=ShortestDistanceValue then continue end ShortestDistanceValue,ClosestPlayerReference,OptimalAimPartReference=DistanceToTargetValue,PlayerInstanceIterator,TargetPartReference break end end if CurrentTargetedPlayerReference and ClosestPlayerReference then local CurrentCharacterModelReference=CurrentTargetedPlayerReference.Character if CurrentCharacterModelReference and CurrentCharacterModelReference.Parent then local CurrentTorsoPartReference=CurrentCharacterModelReference:FindFirstChild("Torso")or CurrentCharacterModelReference:FindFirstChild("HumanoidRootPart")if CurrentTorsoPartReference and(LocalTorsoPartReference.Position-CurrentTorsoPartReference.Position).Magnitude>=ShortestDistanceValue then CurrentTargetedPlayerReference=ClosestPlayerReference end else CurrentTargetedPlayerReference=ClosestPlayerReference end else CurrentTargetedPlayerReference=ClosestPlayerReference end if CurrentTargetedPlayerReference and OptimalAimPartReference then CameraReference.CFrame=CameraReference.CFrame:Lerp(CFrame.new(CameraReference.CFrame.Position,OptimalAimPartReference.Position),math.random(45,55)/100)CircleStrokeUIElement.Color=Color3.fromRGB(255,85,85)else CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)end for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do if PlayerInstanceIterator==LocalPlayerReference then continue end local CharacterModelReference=PlayerInstanceIterator.Character if not CharacterModelReference then continue end local TargetRootPartReference=CharacterModelReference:FindFirstChild("HumanoidRootPart")if not TargetRootPartReference then if SkeletonLinesStorage[PlayerInstanceIterator]then for _,LineInstance in pairs(SkeletonLinesStorage[PlayerInstanceIterator])do LineInstance.Visible=false end end continue end local HumanoidInstanceReference,EquippedToolReference,SkeletonColorValue=CharacterModelReference:FindFirstChildOfClass("Humanoid"),CharacterModelReference:FindFirstChildOfClass("Tool"),Color3.fromRGB(0,0,255)if HumanoidInstanceReference and HumanoidInstanceReference.Health<=0 then SkeletonColorValue=Color3.fromRGB(255,255,255)elseif PlayerInstanceIterator:IsFriendsWith(LocalPlayerReference.UserId)then SkeletonColorValue=Color3.fromRGB(0,255,0)elseif EquippedToolReference and EquippedToolReference.Name~="Celular"and EquippedToolReference.Name~="Lixo"then SkeletonColorValue=Color3.fromRGB(255,0,0)end if not SkeletonLinesStorage[PlayerInstanceIterator]then SkeletonLinesStorage[PlayerInstanceIterator]={}for i=1,5 do local LineInstance=Drawing.new("Line")LineInstance.Thickness,LineInstance.Transparency=2,1 SkeletonLinesStorage[PlayerInstanceIterator][i]=LineInstance end end for ConnectionIndex,ConnectionPair in ipairs(SkeletonConnectionsR6Table)do local JointAReference,JointBReference,LineInstance=CharacterModelReference:FindFirstChild(ConnectionPair[1]),CharacterModelReference:FindFirstChild(ConnectionPair[2]),SkeletonLinesStorage[PlayerInstanceIterator][ConnectionIndex]if not JointAReference or not JointBReference or not LineInstance then continue end local ScreenPositionA,IsOnScreenA=CameraReference:WorldToViewportPoint(JointAReference.Position)local ScreenPositionB,IsOnScreenB=CameraReference:WorldToViewportPoint(JointBReference.Position)LineInstance.Color=SkeletonColorValue if IsOnScreenA and IsOnScreenB then LineInstance.From,LineInstance.To,LineInstance.Visible=Vector2.new(ScreenPositionA.X,ScreenPositionA.Y),Vector2.new(ScreenPositionB.X,ScreenPositionB.Y),true else LineInstance.Visible=false end end end end)
-PlayersServiceReference.PlayerRemoving:Connect(function(PlayerInstanceIterator)if not SkeletonLinesStorage[PlayerInstanceIterator]then return end for _,LineInstance in pairs(SkeletonLinesStorage[PlayerInstanceIterator])do LineInstance:Remove()end SkeletonLinesStorage[PlayerInstanceIterator]=nil end)
+
+local LocalPlayerReference,RunServiceReference,PlayersServiceReference,WorkspaceReference,CameraReference=game:GetService("Players").LocalPlayer,game:GetService("RunService"),game:GetService("Players"),game:GetService("Workspace"),game:GetService("Workspace").CurrentCamera
+local SystemExecutionStatusVariable,CurrentTargetedPlayerReference,CircleRadiusPixelsValue,MaximumAimbotRangeStudsValue,LastBillboardUpdateTime,BillboardUpdateInterval,SkeletonConnectionsR6Table,SkeletonLinesStorage=false,nil,110,250,0,0.1,{{"Head","Torso"},{"Torso","Left Arm"},{"Torso","Right Arm"},{"Torso","Left Leg"},{"Torso","Right Leg"}},{}
+local RaycastConfigurationParameters=RaycastParams.new()
+RaycastConfigurationParameters.FilterType,RaycastConfigurationParameters.IgnoreWater=Enum.RaycastFilterType.Blacklist,true
+
+local function CreateInstanceWithPropertiesFunction(ClassNameString,PropertiesTableReference)
+local InstanceReference=Instance.new(ClassNameString)
+for PropertyNameString,PropertyValueReference in pairs(PropertiesTableReference)do
+if PropertyNameString~="Parent"then InstanceReference[PropertyNameString]=PropertyValueReference end
+end
+if PropertiesTableReference.Parent then InstanceReference.Parent=PropertiesTableReference.Parent end
+return InstanceReference
+end
+
+local function CreatePlayerInformationPanelForCharacterModelReference(PlayerInstanceIteratorReference,CharacterModelReference)
+local MainBodyPartReference=CharacterModelReference:FindFirstChild("HumanoidRootPart")or CharacterModelReference:FindFirstChild("Torso")
+if not MainBodyPartReference then return end
+local PlayerInformationPanelPartInstance=CreateInstanceWithPropertiesFunction("Part",{Name="MicaHubInfoPanelPart",Size=Vector3.new(5,3.2,0.1),Anchored=true,CanCollide=false,Transparency=1,Parent=MainBodyPartReference})
+local PlayerInformationSurfaceGuiInstance=CreateInstanceWithPropertiesFunction("SurfaceGui",{Name="PlayerInfoPanel",Face=Enum.NormalId.Front,AlwaysOnTop=true,LightInfluence=0,SizingMode=Enum.SurfaceGuiSizingMode.PixelsPerStud,PixelsPerStud=100,Parent=PlayerInformationPanelPartInstance})
+local MainFrameContainerInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="MainFrame",Size=UDim2.new(1,0,1,0),BackgroundColor3=Color3.fromRGB(50,50,55),BorderSizePixel=0,Parent=PlayerInformationSurfaceGuiInstance})
+CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,8),Parent=MainFrameContainerInstance})
+CreateInstanceWithPropertiesFunction("TextLabel",{Name="PlayerName",Size=UDim2.new(1,-20,0,50),Position=UDim2.new(0,10,0,10),BackgroundTransparency=1,Text="@"..PlayerInstanceIteratorReference.Name,TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=28,TextXAlignment=Enum.TextXAlignment.Left,TextStrokeTransparency=0.7,TextStrokeColor3=Color3.fromRGB(0,0,0),Parent=MainFrameContainerInstance})
+local ToolsContainerFrameInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="ToolsContainer",Size=UDim2.new(0,460,0,180),Position=UDim2.new(0,20,0,80),BackgroundTransparency=1,Parent=MainFrameContainerInstance})
+CreateInstanceWithPropertiesFunction("UIGridLayout",{CellSize=UDim2.new(0,80,0,80),CellPadding=UDim2.new(0,12,0,12),HorizontalAlignment=Enum.HorizontalAlignment.Center,VerticalAlignment=Enum.VerticalAlignment.Top,SortOrder=Enum.SortOrder.LayoutOrder,Parent=ToolsContainerFrameInstance})
+for ToolBoxIndexIterator=1,10 do
+local ToolBoxFrameInstance=CreateInstanceWithPropertiesFunction("Frame",{Name="ToolBox"..ToolBoxIndexIterator,Size=UDim2.new(0,80,0,80),BackgroundColor3=Color3.fromRGB(35,35,40),BorderSizePixel=0,Parent=ToolsContainerFrameInstance})
+CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,10),Parent=ToolBoxFrameInstance})
+CreateInstanceWithPropertiesFunction("UIStroke",{Color=Color3.fromRGB(70,70,75),Thickness=2,Parent=ToolBoxFrameInstance})
+CreateInstanceWithPropertiesFunction("TextLabel",{Name="ToolName",Size=UDim2.new(1,-6,1,-6),BackgroundTransparency=1,Text="",TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=14,TextWrapped=true,TextScaled=true,TextStrokeTransparency=0.7,TextStrokeColor3=Color3.fromRGB(0,0,0),Parent=ToolBoxFrameInstance})
+end
+local function UpdatePlayerToolsDisplayInformationFunction()
+local PlayerBackpackReference=PlayerInstanceIteratorReference:FindFirstChild("Backpack")
+if not PlayerBackpackReference then return end
+local AllToolsCollectionTable={}
+for _,ToolInstanceIterator in ipairs(PlayerBackpackReference:GetChildren())do
+if ToolInstanceIterator:IsA("Tool")then table.insert(AllToolsCollectionTable,ToolInstanceIterator)end
+end
+for ToolDisplayIndexIterator=1,10 do
+local ToolBoxFrameReference=ToolsContainerFrameInstance:FindFirstChild("ToolBox"..ToolDisplayIndexIterator)
+if ToolBoxFrameReference then
+local ToolNameTextLabelReference=ToolBoxFrameReference:FindFirstChild("ToolName")
+if ToolNameTextLabelReference then ToolNameTextLabelReference.Text=AllToolsCollectionTable[ToolDisplayIndexIterator]and AllToolsCollectionTable[ToolDisplayIndexIterator].Name or""end
+end
+end
+end
+UpdatePlayerToolsDisplayInformationFunction()
+PlayerInstanceIteratorReference.Backpack.ChildAdded:Connect(UpdatePlayerToolsDisplayInformationFunction)
+PlayerInstanceIteratorReference.Backpack.ChildRemoved:Connect(UpdatePlayerToolsDisplayInformationFunction)
+RunServiceReference.RenderStepped:Connect(function()
+PlayerInformationPanelPartInstance.CFrame=CFrame.new(MainBodyPartReference.Position+Vector3.new(0,5,0),CameraReference.CFrame.Position)
+PlayerInformationSurfaceGuiInstance.Enabled=(CameraReference.CFrame.Position-PlayerInformationPanelPartInstance.Position).Magnitude<=30
+end)
+end
+
+local MainScreenGuiContainer=CreateInstanceWithPropertiesFunction("ScreenGui",{Name="MicaHubUniversalInterface",ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling,IgnoreGuiInset=true,AutoLocalize=false,Parent=game:GetService("CoreGui")})
+local ToggleButtonFrameContainer=CreateInstanceWithPropertiesFunction("Frame",{Name="ToggleButtonFrame",Size=UDim2.new(0,55,0,55),Position=UDim2.new(0.8,0,0.1,10),BackgroundColor3=Color3.fromRGB(40,40,45),BorderSizePixel=0,Parent=MainScreenGuiContainer})
+CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(0,10),Parent=ToggleButtonFrameContainer})
+local ToggleButtonTextLabelElement=CreateInstanceWithPropertiesFunction("TextLabel",{Text="OFF",Size=UDim2.new(1,0,1,0),Position=UDim2.new(0,0,0,0),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,255,255),Font=Enum.Font.GothamBold,TextSize=18,Parent=ToggleButtonFrameContainer})
+local ToggleButtonClickableButton=CreateInstanceWithPropertiesFunction("TextButton",{Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,Text="",Parent=ToggleButtonFrameContainer})
+ToggleButtonClickableButton.MouseButton1Click:Connect(function()
+SystemExecutionStatusVariable=not SystemExecutionStatusVariable
+ToggleButtonTextLabelElement.Text=SystemExecutionStatusVariable and"ON"or"OFF"
+end)
+
+local AimbotCircleFrameContainer=CreateInstanceWithPropertiesFunction("Frame",{Name="AimbotCircleFrame",Size=UDim2.new(0,220,0,220),Position=UDim2.new(.5,0,.5,0),AnchorPoint=Vector2.new(.5,.5),BackgroundTransparency=1,BorderSizePixel=0,Visible=false,Parent=MainScreenGuiContainer})
+CreateInstanceWithPropertiesFunction("UICorner",{CornerRadius=UDim.new(1,0),Parent=AimbotCircleFrameContainer})
+local CircleStrokeUIElement=CreateInstanceWithPropertiesFunction("UIStroke",{Color=Color3.fromRGB(255,255,255),Thickness=1,Transparency=0,LineJoinMode=Enum.LineJoinMode.Round,Parent=AimbotCircleFrameContainer})
+
+RunServiceReference.Heartbeat:Connect(function()
+local CurrentTime=tick()
+if CurrentTime-LastBillboardUpdateTime<BillboardUpdateInterval then return end
+LastBillboardUpdateTime=CurrentTime
+for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do
+if PlayerInstanceIterator==LocalPlayerReference then continue end
+local CharacterModelReference=PlayerInstanceIterator.Character
+if not CharacterModelReference then continue end
+local HumanoidInstanceReference=CharacterModelReference:FindFirstChildOfClass("Humanoid")
+local MainBodyPartReference=CharacterModelReference:FindFirstChild("HumanoidRootPart")or CharacterModelReference:FindFirstChild("Torso")
+if not HumanoidInstanceReference or not MainBodyPartReference then continue end
+if HumanoidInstanceReference.Health>0 then continue end
+local ProximityPromptReference=CharacterModelReference:FindFirstChild("sPrompt",true)
+local OldPlayerTagBillboardReference=CharacterModelReference:FindFirstChild("Head")and CharacterModelReference.Head:FindFirstChild("pTag")
+local ExistingPanelPartReference=MainBodyPartReference:FindFirstChild("MicaHubInfoPanelPart")
+if ProximityPromptReference and ProximityPromptReference:IsA("ProximityPrompt")then ProximityPromptReference.Enabled=false end
+if OldPlayerTagBillboardReference then OldPlayerTagBillboardReference.Enabled=false end
+if not ExistingPanelPartReference then CreatePlayerInformationPanelForCharacterModelReference(PlayerInstanceIterator,CharacterModelReference)end
+end
+end)
+
+RunServiceReference.RenderStepped:Connect(function()
+AimbotCircleFrameContainer.Visible=SystemExecutionStatusVariable
+if not SystemExecutionStatusVariable then
+CurrentTargetedPlayerReference=nil
+for _,LinesTable in pairs(SkeletonLinesStorage)do
+for _,LineInstance in pairs(LinesTable)do LineInstance.Visible=false end
+end
+return
+end
+local LocalCharacterInstance=LocalPlayerReference.Character
+local LocalHumanoidInstanceReference=LocalCharacterInstance and LocalCharacterInstance:FindFirstChildOfClass("Humanoid")
+local LocalTorsoPartReference=LocalCharacterInstance and(LocalCharacterInstance:FindFirstChild("Torso")or LocalCharacterInstance:FindFirstChild("HumanoidRootPart"))
+local EquippedToolReference=LocalCharacterInstance and LocalCharacterInstance:FindFirstChildOfClass("Tool")
+local CanUseAimbot=LocalCharacterInstance and LocalHumanoidInstanceReference and LocalTorsoPartReference and LocalHumanoidInstanceReference.Health>0 and not LocalHumanoidInstanceReference.Sit and EquippedToolReference and EquippedToolReference.Name~="Celular"
+if not CanUseAimbot then
+CurrentTargetedPlayerReference=nil
+CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)
+else
+RaycastConfigurationParameters.FilterDescendantsInstances={LocalCharacterInstance}
+local ClosestPlayerReference,ShortestDistanceValue,OptimalAimPartReference,ScreenCenterPositionVector=nil,math.huge,nil,Vector2.new(CameraReference.ViewportSize.X*.5,CameraReference.ViewportSize.Y*.5)
+for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do
+if PlayerInstanceIterator==LocalPlayerReference or PlayerInstanceIterator:IsFriendsWith(LocalPlayerReference.UserId)then continue end
+local CharacterModelReference=PlayerInstanceIterator.Character
+if not CharacterModelReference or not CharacterModelReference.Parent then continue end
+local HumanoidInstanceReference=CharacterModelReference:FindFirstChildOfClass("Humanoid")
+local TargetTorsoPartReference=CharacterModelReference:FindFirstChild("Torso")or CharacterModelReference:FindFirstChild("HumanoidRootPart")
+if not HumanoidInstanceReference or HumanoidInstanceReference.Health<=0 or HumanoidInstanceReference.Sit or not TargetTorsoPartReference or CharacterModelReference:FindFirstChildOfClass("ForceField")then continue end
+local DistanceToTargetValue=(LocalTorsoPartReference.Position-TargetTorsoPartReference.Position).Magnitude
+if DistanceToTargetValue>MaximumAimbotRangeStudsValue then continue end
+for _,PartNameStringIterator in ipairs({"Head","Torso"})do
+local TargetPartReference=CharacterModelReference:FindFirstChild(PartNameStringIterator)
+if not TargetPartReference then continue end
+local ScreenPositionVector,IsOnScreenBoolean=CameraReference:WorldToViewportPoint(TargetPartReference.Position)
+if not IsOnScreenBoolean or(Vector2.new(ScreenPositionVector.X,ScreenPositionVector.Y)-ScreenCenterPositionVector).Magnitude>CircleRadiusPixelsValue then continue end
+local RaycastResultData=WorkspaceReference:Raycast(CameraReference.CFrame.Position,TargetPartReference.Position-CameraReference.CFrame.Position,RaycastConfigurationParameters)
+if RaycastResultData and(not RaycastResultData.Instance.Parent or not RaycastResultData.Instance.Parent:FindFirstChildOfClass("Humanoid"))then continue end
+if DistanceToTargetValue<ShortestDistanceValue then
+ShortestDistanceValue,ClosestPlayerReference,OptimalAimPartReference=DistanceToTargetValue,PlayerInstanceIterator,TargetPartReference
+break
+end
+end
+end
+if CurrentTargetedPlayerReference and ClosestPlayerReference then
+local CurrentCharacterModelReference=CurrentTargetedPlayerReference.Character
+if CurrentCharacterModelReference and CurrentCharacterModelReference.Parent then
+local CurrentTorsoPartReference=CurrentCharacterModelReference:FindFirstChild("Torso")or CurrentCharacterModelReference:FindFirstChild("HumanoidRootPart")
+if CurrentTorsoPartReference and(LocalTorsoPartReference.Position-CurrentTorsoPartReference.Position).Magnitude>=ShortestDistanceValue then
+CurrentTargetedPlayerReference=ClosestPlayerReference
+end
+else
+CurrentTargetedPlayerReference=ClosestPlayerReference
+end
+else
+CurrentTargetedPlayerReference=ClosestPlayerReference
+end
+if CurrentTargetedPlayerReference and OptimalAimPartReference then
+CameraReference.CFrame=CameraReference.CFrame:Lerp(CFrame.new(CameraReference.CFrame.Position,OptimalAimPartReference.Position),math.random(45,55)/100)
+CircleStrokeUIElement.Color=Color3.fromRGB(255,85,85)
+else
+CircleStrokeUIElement.Color=Color3.fromRGB(255,255,255)
+end
+end
+for _,PlayerInstanceIterator in ipairs(PlayersServiceReference:GetPlayers())do
+if PlayerInstanceIterator==LocalPlayerReference then continue end
+local CharacterModelReference=PlayerInstanceIterator.Character
+if not CharacterModelReference then
+if SkeletonLinesStorage[PlayerInstanceIterator]then
+for _,LineInstance in pairs(SkeletonLinesStorage[PlayerInstanceIterator])do LineInstance.Visible=false end
+end
+continue
+end
+local TargetRootPartReference=CharacterModelReference:FindFirstChild("HumanoidRootPart")
+if not TargetRootPartReference then
+if SkeletonLinesStorage[PlayerInstanceIterator]then
+for _,LineInstance in pairs(SkeletonLinesStorage[PlayerInstanceIterator])do LineInstance.Visible=false end
+end
+continue
+end
+local HumanoidInstanceReference=CharacterModelReference:FindFirstChildOfClass("Humanoid")
+local EquippedToolReference=CharacterModelReference:FindFirstChildOfClass("Tool")
+local SkeletonColorValue=Color3.fromRGB(0,0,255)
+if HumanoidInstanceReference and HumanoidInstanceReference.Health<=0 then
+SkeletonColorValue=Color3.fromRGB(255,255,255)
+elseif PlayerInstanceIterator:IsFriendsWith(LocalPlayerReference.UserId)then
+SkeletonColorValue=Color3.fromRGB(0,255,0)
+elseif EquippedToolReference and EquippedToolReference.Name~="Celular"and EquippedToolReference.Name~="Lixo"then
+SkeletonColorValue=Color3.fromRGB(255,0,0)
+end
+if not SkeletonLinesStorage[PlayerInstanceIterator]then
+SkeletonLinesStorage[PlayerInstanceIterator]={}
+for i=1,5 do
+local LineInstance=Drawing.new("Line")
+LineInstance.Thickness,LineInstance.Transparency=2,1
+SkeletonLinesStorage[PlayerInstanceIterator][i]=LineInstance
+end
+end
+for ConnectionIndex,ConnectionPair in ipairs(SkeletonConnectionsR6Table)do
+local JointAReference=CharacterModelReference:FindFirstChild(ConnectionPair[1])
+local JointBReference=CharacterModelReference:FindFirstChild(ConnectionPair[2])
+local LineInstance=SkeletonLinesStorage[PlayerInstanceIterator][ConnectionIndex]
+if not JointAReference or not JointBReference or not LineInstance then continue end
+local ScreenPositionA,IsOnScreenA=CameraReference:WorldToViewportPoint(JointAReference.Position)
+local ScreenPositionB,IsOnScreenB=CameraReference:WorldToViewportPoint(JointBReference.Position)
+LineInstance.Color=SkeletonColorValue
+if IsOnScreenA and IsOnScreenB then
+LineInstance.From,LineInstance.To,LineInstance.Visible=Vector2.new(ScreenPositionA.X,ScreenPositionA.Y),Vector2.new(ScreenPositionB.X,ScreenPositionB.Y),true
+else
+LineInstance.Visible=false
+end
+end
+end
+end)
+
+PlayersServiceReference.PlayerRemoving:Connect(function(PlayerInstanceIterator)
+if not SkeletonLinesStorage[PlayerInstanceIterator]then return end
+for _,LineInstance in pairs(SkeletonLinesStorage[PlayerInstanceIterator])do LineInstance:Remove()end
+SkeletonLinesStorage[PlayerInstanceIterator]=nil
+end)
