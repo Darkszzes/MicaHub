@@ -22,12 +22,12 @@ MobileToggleButtonImageElement.MouseButton1Click:Connect(function() PrimaryDashb
 
 local HomeTabMainContainerReference = PrimaryDashboardMainWindowInstance:AddTab({Title = "Home", Icon = "home"})
 local WorldFunctionalitiesSection, PlayersFunctionalitiesSection, AimbotFunctionalitiesSection = HomeTabMainContainerReference:AddSection("World Functions"), HomeTabMainContainerReference:AddSection("Players Functions"), HomeTabMainContainerReference:AddSection("Aimbot Functions")
-local StealingFrameFunctionalityEnabled, CurrentAimbotModeSelectedValue, AimbotUniversalFunctionalityEnabled, RemoveCooldownsAlreadyExecutedFlag, LastThreeDimensionalLoopExecutionTimestamp = true, "Humanized", false, false, 0
+local StealingFrameFunctionalityEnabled, CurrentAimbotModeSelectedValue, AimbotUniversalFunctionalityEnabled, RemoveCooldownsAlreadyExecutedFlag, CurrentAimbotTargetBodyPart = true, "Humanized", false, false, nil
 
 WorldFunctionalitiesSection:AddButton({Title = "Remove Cooldowns Interaction", Description = "Removes hold duration from all interaction prompts. Unique Execution!", Callback = function() 
     if RemoveCooldownsAlreadyExecutedFlag then return end
     RemoveCooldownsAlreadyExecutedFlag = true
-    for _, ProximityPromptInstanceElement in pairs(game:GetDescendants()) do 
+    for _, ProximityPromptInstanceElement in pairs(workspace:GetDescendants()) do 
         if ProximityPromptInstanceElement:IsA("ProximityPrompt") and ProximityPromptInstanceElement.HoldDuration > 0 then ProximityPromptInstanceElement.HoldDuration = 0 end
     end
 end})
@@ -42,18 +42,133 @@ local AimbotUniversalToggleControlElement = AimbotFunctionalitiesSection:AddTogg
 AimbotUniversalToggleControlElement:OnChanged(function(ToggleStateValue) AimbotUniversalFunctionalityEnabled = ToggleStateValue end)
 
 local RenderSteppedConnectionForTwoDimensionalLogic = RunServiceGameReference.RenderStepped:Connect(function(DeltaTimeFrameValue) 
-    if not AimbotUniversalFunctionalityEnabled then FieldOfViewCircleContainerFrame.Visible = false return end
+    if not AimbotUniversalFunctionalityEnabled then 
+        FieldOfViewCircleContainerFrame.Visible = false 
+        CurrentAimbotTargetBodyPart = nil
+        return 
+    end
+    
     FieldOfViewCircleContainerFrame.Visible = true
+    
+    local LocalCharacter = LocalPlayerServiceReference.Character
+    if not LocalCharacter then 
+        CurrentAimbotTargetBodyPart = nil
+        FieldOfViewCircleStrokeElement.Color = Color3.fromRGB(255, 255, 255)
+        return 
+    end
+    
+    local EquippedTool = LocalCharacter:FindFirstChildOfClass("Tool")
+    if not EquippedTool then 
+        CurrentAimbotTargetBodyPart = nil
+        FieldOfViewCircleStrokeElement.Color = Color3.fromRGB(255, 255, 255)
+        return 
+    end
+    
+    local ToolName = EquippedTool.Name
+    if ToolName == "Celular" or ToolName == "Lixo" then
+        CurrentAimbotTargetBodyPart = nil
+        FieldOfViewCircleStrokeElement.Color = Color3.fromRGB(255, 255, 255)
+        return
+    end
+    
+    local CurrentCameraInstance = workspace.CurrentCamera
+    if not CurrentCameraInstance then return end
+    
+    local MouseLocationVector = CurrentCameraInstance.ViewportSize / 2
+    local FieldOfViewRadiusValue = 110
+    local ClosestTargetDistance = math.huge
+    local ClosestTargetCharacterInstance = nil
+    local ClosestTargetBodyPartInstance = nil
+    
+    for _, PlayerInstanceElement in pairs(game:GetService("Players"):GetPlayers()) do
+        if PlayerInstanceElement == LocalPlayerServiceReference then continue end
+        
+        local TargetCharacterModel = PlayerInstanceElement.Character
+        if not TargetCharacterModel then continue end
+        
+        local TargetHumanoidRootPart = TargetCharacterModel:FindFirstChild("HumanoidRootPart")
+        if not TargetHumanoidRootPart then continue end
+        
+        local TargetHumanoidInstance = TargetCharacterModel:FindFirstChildOfClass("Humanoid")
+        if not TargetHumanoidInstance then continue end
+        if TargetHumanoidInstance.Health <= 0 then continue end
+        if TargetHumanoidInstance.Sit then continue end
+        
+        local LocalHumanoidRootPart = LocalCharacter:FindFirstChild("HumanoidRootPart")
+        if not LocalHumanoidRootPart then continue end
+        
+        local DistanceToTargetValue = (TargetHumanoidRootPart.Position - LocalHumanoidRootPart.Position).Magnitude
+        if DistanceToTargetValue > 200 then continue end
+        
+        local TargetHeadPart = TargetCharacterModel:FindFirstChild("Head")
+        local TargetTorsoPart = TargetCharacterModel:FindFirstChild("UpperTorso") or TargetCharacterModel:FindFirstChild("Torso")
+        local PriorityBodyPart = TargetHeadPart or TargetTorsoPart
+        if not PriorityBodyPart then continue end
+        
+        local RaycastOriginPosition = CurrentCameraInstance.CFrame.Position
+        local RaycastDirectionVector = (PriorityBodyPart.Position - RaycastOriginPosition).Unit * DistanceToTargetValue
+        local RaycastParametersInstance = RaycastParams.new()
+        RaycastParametersInstance.FilterDescendantsInstances = {LocalCharacter, TargetCharacterModel}
+        RaycastParametersInstance.FilterType = Enum.RaycastFilterType.Exclude
+        
+        local RaycastResultData = workspace:Raycast(RaycastOriginPosition, RaycastDirectionVector, RaycastParametersInstance)
+        if RaycastResultData then continue end
+        
+        local ScreenPositionVector, IsOnScreenBoolean = CurrentCameraInstance:WorldToViewportPoint(PriorityBodyPart.Position)
+        if not IsOnScreenBoolean then continue end
+        
+        local DistanceFromCenterValue = (Vector2.new(ScreenPositionVector.X, ScreenPositionVector.Y) - MouseLocationVector).Magnitude
+        if DistanceFromCenterValue > FieldOfViewRadiusValue then continue end
+        
+        if DistanceFromCenterValue < ClosestTargetDistance then
+            ClosestTargetDistance = DistanceFromCenterValue
+            ClosestTargetCharacterInstance = TargetCharacterModel
+            ClosestTargetBodyPartInstance = PriorityBodyPart
+        end
+    end
+    
+    if not ClosestTargetCharacterInstance then
+        FieldOfViewCircleStrokeElement.Color = Color3.fromRGB(255, 255, 255)
+        CurrentAimbotTargetBodyPart = nil
+        return
+    end
+    
+    FieldOfViewCircleStrokeElement.Color = Color3.fromRGB(255, 0, 0)
+    CurrentAimbotTargetBodyPart = ClosestTargetBodyPartInstance
+    
+    if not CurrentAimbotTargetBodyPart then return end
+    
+    local TargetPositionVector = CurrentAimbotTargetBodyPart.Position
+    if not TargetPositionVector then return end
+    
+    local CameraLookVector = CurrentCameraInstance.CFrame.LookVector
+    local DirectionToTargetVector = (TargetPositionVector - CurrentCameraInstance.CFrame.Position).Unit
+    
+    if CurrentAimbotModeSelectedValue == "Maximum" then
+        CurrentCameraInstance.CFrame = CFrame.new(CurrentCameraInstance.CFrame.Position, TargetPositionVector)
+        return
+    end
+    
+    if CurrentAimbotModeSelectedValue == "Humanized" then
+        local RandomSmoothnessValue = math.random(55, 80) / 100
+        local SmoothedDirectionVector = CameraLookVector:Lerp(DirectionToTargetVector, RandomSmoothnessValue)
+        CurrentCameraInstance.CFrame = CFrame.new(CurrentCameraInstance.CFrame.Position, CurrentCameraInstance.CFrame.Position + SmoothedDirectionVector)
+        return
+    end
 end)
 
 local HeartbeatConnectionForThreeDimensionalLogic = RunServiceGameReference.Heartbeat:Connect(function(DeltaTimeFrameValue)
-    if os.clock() - LastThreeDimensionalLoopExecutionTimestamp < 1/5 then return end 
-    LastThreeDimensionalLoopExecutionTimestamp = os.clock()
-    if AimbotUniversalFunctionalityEnabled then end
+    if not RemoveCooldownsAlreadyExecutedFlag then return end
 end)
 
 game.DescendantAdded:Connect(function(DescendantInstanceElement)
-    if not RemoveCooldownsAlreadyExecutedFlag or not DescendantInstanceElement:IsA("ProximityPrompt") or DescendantInstanceElement.HoldDuration <= 0 then return end
+    if not RemoveCooldownsAlreadyExecutedFlag then return end
+    if not DescendantInstanceElement:IsA("ProximityPrompt") then return end
+    if DescendantInstanceElement.HoldDuration <= 0 then return end
+    
+    local IsInWorkspace = DescendantInstanceElement:IsDescendantOf(workspace)
+    if not IsInWorkspace then return end
+    
     DescendantInstanceElement.HoldDuration = 0
 end)
 
