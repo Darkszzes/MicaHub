@@ -150,7 +150,7 @@ local RenderSteppedConnectionForTwoDimensionalLogic = RunServiceGameReference.Re
     end
     
     if CurrentAimbotModeSelectedValue == "Humanized" then
-        local RandomSmoothnessValue = math.random(55, 80) / 100
+        local RandomSmoothnessValue = math.random(45, 55) / 100
         local SmoothedDirectionVector = CameraLookVector:Lerp(DirectionToTargetVector, RandomSmoothnessValue)
         CurrentCameraInstance.CFrame = CFrame.new(CurrentCameraInstance.CFrame.Position, CurrentCameraInstance.CFrame.Position + SmoothedDirectionVector)
         return
