@@ -181,4 +181,12 @@ end)
 PrimaryDashboardMainWindowInstance.Root.Destroying:Connect(function()
     if RenderSteppedConnectionForTwoDimensionalLogicReference then RenderSteppedConnectionForTwoDimensionalLogicReference:Disconnect()end
     if HeartbeatConnectionForThreeDimensionalLogicReference then HeartbeatConnectionForThreeDimensionalLogicReference:Disconnect()end
-    if MobileTog
+    if MobileToggleButtonConnectionReference then MobileToggleButtonConnectionReference:Disconnect()end
+    if DescendantAddedConnectionReference then DescendantAddedConnectionReference:Disconnect()end
+    for PlayerUserIdKey,ExistingLineDrawingObjectReference in pairs(PlayerLineESPStorageTable)do if ExistingLineDrawingObjectReference then ExistingLineDrawingObjectReference:Remove()end PlayerLineESPStorageTable[PlayerUserIdKey]=nil end
+    for PlayerUserIdKey,ExistingCircleDrawingObjectReference in pairs(PlayerCircleESPStorageTable)do if ExistingCircleDrawingObjectReference then ExistingCircleDrawingObjectReference:Remove()end PlayerCircleESPStorageTable[PlayerUserIdKey]=nil end
+    for PlayerUserIdKey,ExistingTextDrawingObjectReference in pairs(PlayerTextESPStorageTable)do if ExistingTextDrawingObjectReference then ExistingTextDrawingObjectReference:Remove()end PlayerTextESPStorageTable[PlayerUserIdKey]=nil end
+    MobileUserInterfaceMainContainer:Destroy()script:Destroy()
+end)
+
+PrimaryDashboardMainWindowInstance:SelectTab(1)
