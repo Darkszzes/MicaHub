@@ -121,4 +121,64 @@ local RenderSteppedConnectionForTwoDimensionalLogicReference=RunServiceGameRefer
             local CurrentCircleDrawingObjectReference=PlayerCircleESPStorageTable[PlayerUserIdValue]
             if not CurrentCircleDrawingObjectReference then CurrentCircleDrawingObjectReference=Drawing.new("Circle")CurrentCircleDrawingObjectReference.Radius,CurrentCircleDrawingObjectReference.Thickness,CurrentCircleDrawingObjectReference.Filled,CurrentCircleDrawingObjectReference.Transparency,CurrentCircleDrawingObjectReference.Visible=2,1,false,1,true PlayerCircleESPStorageTable[PlayerUserIdValue]=CurrentCircleDrawingObjectReference end
             CurrentCircleDrawingObjectReference.Color=ESPColorValue
-            CurrentCircleDrawingObjectReference.Position=Vector2.new(TargetTorsoScreenPositionVectorValue.X,TargetTorsoScreenPositio
+            CurrentCircleDrawingObjectReference.Position=Vector2.new(TargetTorsoScreenPositionVectorValue.X,TargetTorsoScreenPositionVectorValue.Y)
+            local CurrentTextDrawingObjectReference=PlayerTextESPStorageTable[PlayerUserIdValue]
+            if not CurrentTextDrawingObjectReference then CurrentTextDrawingObjectReference=Drawing.new("Text")CurrentTextDrawingObjectReference.Size,CurrentTextDrawingObjectReference.Color,CurrentTextDrawingObjectReference.Center,CurrentTextDrawingObjectReference.Outline,CurrentTextDrawingObjectReference.Transparency,CurrentTextDrawingObjectReference.Visible=12,Color3.new(1,1,1),true,true,1,true PlayerTextESPStorageTable[PlayerUserIdValue]=CurrentTextDrawingObjectReference end
+            CurrentTextDrawingObjectReference.Text="["..CurrentHealthValue.."HP]["..math.floor(DistanceToTargetCalculatedValue).."M]"
+            CurrentTextDrawingObjectReference.Position=Vector2.new(TargetTorsoScreenPositionVectorValue.X,TargetTorsoScreenPositionVectorValue.Y+10)
+        end
+    else for PlayerUserIdKey,ExistingLineDrawingObjectReference in pairs(PlayerLineESPStorageTable)do if ExistingLineDrawingObjectReference then ExistingLineDrawingObjectReference:Remove()end PlayerLineESPStorageTable[PlayerUserIdKey]=nil end for PlayerUserIdKey,ExistingCircleDrawingObjectReference in pairs(PlayerCircleESPStorageTable)do if ExistingCircleDrawingObjectReference then ExistingCircleDrawingObjectReference:Remove()end PlayerCircleESPStorageTable[PlayerUserIdKey]=nil end for PlayerUserIdKey,ExistingTextDrawingObjectReference in pairs(PlayerTextESPStorageTable)do if ExistingTextDrawingObjectReference then ExistingTextDrawingObjectReference:Remove()end PlayerTextESPStorageTable[PlayerUserIdKey]=nil end end
+    
+    if not AimbotUniversalFunctionalityEnabledState then FieldOfViewCircleContainerFrame.Visible,CurrentAimbotTargetBodyPartReference=false,nil return end FieldOfViewCircleContainerFrame.Visible=true
+    local LocalCharacterModelReference=LocalPlayerServiceReference.Character if not LocalCharacterModelReference then CurrentAimbotTargetBodyPartReference,FieldOfViewCircleStrokeElement.Color=nil,Color3.fromRGB(255,255,255)return end
+    local LocalHumanoidInstanceReference=LocalCharacterModelReference:FindFirstChildOfClass("Humanoid")if not LocalHumanoidInstanceReference then CurrentAimbotTargetBodyPartReference,FieldOfViewCircleStrokeElement.Color=nil,Color3.fromRGB(255,255,255)return end
+    if LocalHumanoidInstanceReference.Sit then CurrentAimbotTargetBodyPartReference,FieldOfViewCircleStrokeElement.Color=nil,Color3.fromRGB(255,255,255)return end
+    local EquippedToolInstanceReference=LocalCharacterModelReference:FindFirstChildOfClass("Tool")if not EquippedToolInstanceReference then CurrentAimbotTargetBodyPartReference,FieldOfViewCircleStrokeElement.Color=nil,Color3.fromRGB(255,255,255)return end
+    local CurrentCameraInstanceReference=workspace.CurrentCamera if not CurrentCameraInstanceReference then return end
+    local MouseLocationVectorValue,FieldOfViewRadiusNumericValue,ClosestTargetDistanceCalculatedValue,ClosestTargetCharacterInstanceReference,ClosestTargetBodyPartInstanceReference=CurrentCameraInstanceReference.ViewportSize/2,100,math.huge,nil,nil
+    for _,PlayerInstanceElementReference in pairs(game:GetService("Players"):GetPlayers())do if PlayerInstanceElementReference==LocalPlayerServiceReference then continue end
+        if LocalPlayerServiceReference:IsFriendsWith(PlayerInstanceElementReference.UserId)then continue end
+        if IgnoreTeamModeUniversalFunctionalityEnabledState and PlayerInstanceElementReference.Team and PlayerInstanceElementReference.Team==LocalPlayerServiceReference.Team then continue end
+        local TargetCharacterModelReference=PlayerInstanceElementReference.Character if not TargetCharacterModelReference then continue end
+        local TargetHumanoidRootPartReference=TargetCharacterModelReference:FindFirstChild("HumanoidRootPart")if not TargetHumanoidRootPartReference then continue end
+        local TargetHumanoidInstanceReference=TargetCharacterModelReference:FindFirstChildOfClass("Humanoid")if not TargetHumanoidInstanceReference or TargetHumanoidInstanceReference.Health<=0 or TargetHumanoidInstanceReference.Sit then continue end
+        local LocalHumanoidRootPartReference=LocalCharacterModelReference:FindFirstChild("HumanoidRootPart")if not LocalHumanoidRootPartReference then continue end
+        local DistanceToTargetCalculatedValue=(TargetHumanoidRootPartReference.Position-LocalHumanoidRootPartReference.Position).Magnitude if DistanceToTargetCalculatedValue>300 then continue end
+        local TargetHeadPartReference,TargetTorsoPartReference=TargetCharacterModelReference:FindFirstChild("Head"),TargetCharacterModelReference:FindFirstChild("UpperTorso")or TargetCharacterModelReference:FindFirstChild("Torso")
+        local PriorityBodyPartReference=TargetHeadPartReference or TargetTorsoPartReference if not PriorityBodyPartReference then continue end
+        local RaycastOriginPositionValue,RaycastDirectionVectorValue=CurrentCameraInstanceReference.CFrame.Position,(PriorityBodyPartReference.Position-CurrentCameraInstanceReference.CFrame.Position).Unit*DistanceToTargetCalculatedValue
+        local RaycastParametersInstanceReference=RaycastParams.new()RaycastParametersInstanceReference.FilterDescendantsInstances,RaycastParametersInstanceReference.FilterType={LocalCharacterModelReference,TargetCharacterModelReference},Enum.RaycastFilterType.Exclude
+        if workspace:Raycast(RaycastOriginPositionValue,RaycastDirectionVectorValue,RaycastParametersInstanceReference)then continue end
+        local ScreenPositionVectorValue,IsOnScreenBooleanValue=CurrentCameraInstanceReference:WorldToViewportPoint(PriorityBodyPartReference.Position)if not IsOnScreenBooleanValue then continue end
+        local DistanceFromCenterCalculatedValue=(Vector2.new(ScreenPositionVectorValue.X,ScreenPositionVectorValue.Y)-MouseLocationVectorValue).Magnitude if DistanceFromCenterCalculatedValue>FieldOfViewRadiusNumericValue then continue end
+        if DistanceFromCenterCalculatedValue<ClosestTargetDistanceCalculatedValue then ClosestTargetDistanceCalculatedValue,ClosestTargetCharacterInstanceReference,ClosestTargetBodyPartInstanceReference=DistanceFromCenterCalculatedValue,TargetCharacterModelReference,PriorityBodyPartReference end
+    end
+    if not ClosestTargetCharacterInstanceReference then FieldOfViewCircleStrokeElement.Color,CurrentAimbotTargetBodyPartReference=Color3.fromRGB(255,255,255),nil return end
+    FieldOfViewCircleStrokeElement.Color,CurrentAimbotTargetBodyPartReference=Color3.fromRGB(255,0,0),ClosestTargetBodyPartInstanceReference if not CurrentAimbotTargetBodyPartReference then return end
+    local TargetPositionVectorValue=CurrentAimbotTargetBodyPartReference.Position if not TargetPositionVectorValue then return end
+    local CameraLookVectorValue,DirectionToTargetVectorValue=CurrentCameraInstanceReference.CFrame.LookVector,(TargetPositionVectorValue-CurrentCameraInstanceReference.CFrame.Position).Unit
+    local TargetHumanoidForStateCheckReference,IsTargetInAirBooleanState=ClosestTargetCharacterInstanceReference:FindFirstChildOfClass("Humanoid"),false
+    if TargetHumanoidForStateCheckReference then local CurrentStateEnumValue=TargetHumanoidForStateCheckReference:GetState()if CurrentStateEnumValue==Enum.HumanoidStateType.Freefall or CurrentStateEnumValue==Enum.HumanoidStateType.Jumping or CurrentStateEnumValue==Enum.HumanoidStateType.Flying then IsTargetInAirBooleanState=true end end
+    if CurrentAimbotModeSelectedValue=="Maximum"or IsTargetInAirBooleanState then CurrentCameraInstanceReference.CFrame=CFrame.new(CurrentCameraInstanceReference.CFrame.Position,TargetPositionVectorValue)return end
+    if CurrentAimbotModeSelectedValue=="Humanized"then local RandomSmoothnessCalculatedValue=math.random(45,55)/100 local SmoothedDirectionVectorValue=CameraLookVectorValue:Lerp(DirectionToTargetVectorValue,RandomSmoothnessCalculatedValue)CurrentCameraInstanceReference.CFrame=CFrame.new(CurrentCameraInstanceReference.CFrame.Position,CurrentCameraInstanceReference.CFrame.Position+SmoothedDirectionVectorValue)return end
+end)
+
+local HeartbeatConnectionForThreeDimensionalLogicReference=RunServiceGameReference.Heartbeat:Connect(function(DeltaTimeFrameValueParameter)
+    if os.clock()-LastThreeDimensionalLoopExecutionTimestampValue<1/5 then return end LastThreeDimensionalLoopExecutionTimestampValue=os.clock()if not AntiAfkUniversalFunctionalityEnabledState then return end
+    local VirtualInputManagerServiceReference=game:GetService("VirtualInputManager")VirtualInputManagerServiceReference:SendMouseButtonEvent(-100,-100,0,true,game,0)VirtualInputManagerServiceReference:SendMouseButtonEvent(-100,-100,0,false,game,0)
+end)
+
+local DescendantAddedConnectionReference=game.DescendantAdded:Connect(function(DescendantInstanceElementReference)
+    if RemoveCooldownsInteractionAlreadyExecutedFlag and DescendantInstanceElementReference:IsA("ProximityPrompt")and DescendantInstanceElementReference.HoldDuration>0 and DescendantInstanceElementReference:IsDescendantOf(workspace)then DescendantInstanceElementReference.HoldDuration=0 end
+    if ReduceGameGraphsInteractionAlreadyExecutedFlag then
+        if DescendantInstanceElementReference:IsA("BasePart")and DescendantInstanceElementReference:IsDescendantOf(workspace)then DescendantInstanceElementReference.Material=Enum.Material.Plastic end
+        if DescendantInstanceElementReference:IsA("Texture")or DescendantInstanceElementReference:IsA("Decal")then pcall(function()DescendantInstanceElementReference.Transparency=1 DescendantInstanceElementReference.Parent=nil end)end
+        if DescendantInstanceElementReference:IsA("PostEffect")or DescendantInstanceElementReference:IsA("BlurEffect")or DescendantInstanceElementReference:IsA("BloomEffect")or DescendantInstanceElementReference:IsA("DepthOfFieldEffect")or DescendantInstanceElementReference:IsA("SunRaysEffect")or DescendantInstanceElementReference:IsA("ColorCorrectionEffect")then DescendantInstanceElementReference.Enabled=false DescendantInstanceElementReference:GetPropertyChangedSignal("Enabled"):Connect(function()DescendantInstanceElementReference.Enabled=false end)end
+        if DescendantInstanceElementReference:IsA("Atmosphere")or DescendantInstanceElementReference:IsA("Sky")or DescendantInstanceElementReference:IsA("Clouds")then pcall(function()DescendantInstanceElementReference:Destroy()end)end
+    end
+end)
+
+PrimaryDashboardMainWindowInstance.Root.Destroying:Connect(function()
+    if RenderSteppedConnectionForTwoDimensionalLogicReference then RenderSteppedConnectionForTwoDimensionalLogicReference:Disconnect()end
+    if HeartbeatConnectionForThreeDimensionalLogicReference then HeartbeatConnectionForThreeDimensionalLogicReference:Disconnect()end
+    if MobileTog
