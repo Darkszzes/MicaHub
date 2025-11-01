@@ -18,6 +18,7 @@ local CurrentAimbotModeSelectedValue,AimbotUniversalFunctionalityEnabledState,Re
 local MobileToggleButtonConnectionReference=MobileToggleButtonImageElement.MouseButton1Click:Connect(function()PrimaryDashboardMainWindowInstance.Root.Visible=not PrimaryDashboardMainWindowInstance.Root.Visible end)
 PrimaryDashboardMainWindowInstance:Minimize()
 
+AuthorInformationSectionReference:AddParagraph({Title="Update 1.9.0",Content="New Options, Bug Fixes, Performance Improvements, and General Enhancements!"})
 AuthorInformationSectionReference:AddButton({Title="Copy Discord Link",Callback=function()
     Setclipboard("https://discord.gg/Bmvdw7mezT")
 end})
